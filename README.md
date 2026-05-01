@@ -1,36 +1,192 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# tutorial-kit
 
-## Getting Started
+A Next.js framework for building timeboxed tutorial sites with MDX and i18n support.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- 🌍 **Multi-language** — Built-in i18n with per-tutorial translations
+- 📝 **MDX-powered** — Write tutorials in MDX with custom components
+- 🎨 **Customizable** — Tailwind v4 + shadcn-inspired components
+- 📦 **Static Export** — Deploy to Cloudflare Pages, Vercel, Netlify, or any static host
+- 🔍 **SEO-ready** — hreflang tags, sitemap, Open Graph, Twitter Cards
+- ⚡ **Fast** — Next.js 16 App Router + Turbopack
+
+## Architecture
+
+This framework is **content-agnostic**. It reads tutorials from an external content repository at build time.
+
+```
+tutorial-kit (framework)       ← Pure rendering engine
+    ↓ reads from
+1hour-guide-content (content)  ← Pure MDX + YAML
+    ↓ builds to
+out/ (static site)             ← Deploy anywhere
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Quick Start
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 1. Clone this repo
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+git clone <repo-url> tutorial-kit
+cd tutorial-kit
+pnpm install
+```
 
-## Learn More
+### 2. Point to your content repository
 
-To learn more about Next.js, take a look at the following resources:
+By default, the framework looks for content in `../1hour-guide-content/`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+You can override this with the `CONTENT_DIR` environment variable:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+export CONTENT_DIR=/path/to/your/content
+pnpm build
+```
 
-## Deploy on Vercel
+### 3. Build
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+pnpm build
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Static site will be generated in `out/`.
+
+### 4. Preview
+
+```bash
+pnpm preview
+# or
+cd out && python3 -m http.server 8000
+```
+
+## Content Repository Structure
+
+Your content repository should follow this structure:
+
+```
+content-repo/
+├─ site.yaml              # Site-wide config
+├─ categories.yaml        # Category definitions
+├─ i18n/
+│  ├─ en.yaml            # English UI strings
+│  └─ zh.yaml            # Chinese UI strings
+└─ tutorials/
+   ├─ python-basics/
+   │  ├─ meta.yaml       # Shared metadata
+   │  ├─ en.mdx          # English version
+   │  └─ zh.mdx          # Chinese version
+   └─ ...
+```
+
+### `site.yaml`
+
+```yaml
+defaultLocale: en
+locales: [en, zh]
+title:
+  en: "Your Site Title"
+  zh: "你的站点标题"
+description:
+  en: "Your site description"
+  zh: "你的站点描述"
+domain: yoursite.com
+url: https://yoursite.com
+author:
+  name: Your Name
+  url: https://yoursite.com
+  twitter: yourhandle
+  github: yourusername
+```
+
+### `categories.yaml`
+
+```yaml
+- slug: code
+  name:
+    en: Code
+    zh: 编程
+  icon: "💻"
+  color: blue
+  description:
+    en: "Programming tutorials"
+    zh: "编程教程"
+```
+
+### `tutorials/<slug>/meta.yaml`
+
+```yaml
+slug: python-basics
+category: code
+difficulty: beginner  # beginner | intermediate | advanced
+duration: 60          # minutes
+tags: [python, programming]
+date: 2026-05-01
+published: true
+cover: /images/tutorials/python-basics.svg
+translations:
+  en: { status: published }
+  zh: { status: published }
+```
+
+### `tutorials/<slug>/en.mdx`
+
+```mdx
+---
+title: "1 Hour to Python Basics"
+description: "Learn Python in 60 minutes"
+---
+
+# 1 Hour to Python Basics
+
+Your tutorial content here...
+
+<TimeBlock start="0" end="10" title="Setup" />
+
+<Checkpoint>
+Q: What is a variable?
+<Answer>
+A variable stores data.
+</Answer>
+</Checkpoint>
+
+<NextStep slug="python-web-scraping" />
+```
+
+## Custom MDX Components
+
+- `<TimeBlock start="0" end="10" title="Setup" />` — Time allocation
+- `<Checkpoint>...</Checkpoint>` — Self-test questions
+- `<Answer>...</Answer>` — Collapsible answer (inside Checkpoint)
+- `<NextStep slug="next-tutorial" />` — Recommended next tutorial
+
+## Deployment
+
+### Cloudflare Pages
+
+1. Push both repos to GitHub
+2. In Cloudflare Pages, connect `tutorial-kit` repo
+3. Build settings:
+   - Build command: `pnpm build`
+   - Build output directory: `out`
+   - Environment variables: `CONTENT_DIR=../1hour-guide-content` (if using git submodule)
+
+### Vercel / Netlify
+
+Same as above. Make sure `output: 'export'` is set in `next.config.ts`.
+
+## Development
+
+```bash
+pnpm dev
+```
+
+Note: You need a content repository at `../1hour-guide-content/` or set `CONTENT_DIR`.
+
+## License
+
+MIT
+
+## Credits
+
+Built by [Zoe](https://zoe.im) for [1hour.guide](https://1hour.guide).
