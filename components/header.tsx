@@ -13,14 +13,7 @@ export function Header({ locale }: { locale: Locale }) {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href={`/${locale}/`} className="flex items-center gap-2.5">
-            <div
-              className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm"
-              style={{
-                background: `linear-gradient(135deg, var(--primary) 0%, var(--primary-gradient-end) 100%)`,
-              }}
-            >
-              1H
-            </div>
+            <img src="/logo.svg" alt="1 Hour Guide" width={32} height={32} className="w-8 h-8" />
             <span className="font-bold text-lg">{site.title[locale]}</span>
           </Link>
 

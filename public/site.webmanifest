@@ -1,0 +1,26 @@
+{
+  "name": "1 Hour Guide",
+  "short_name": "1H Guide",
+  "description": "Learn anything in 1 hour. Hands-on tutorials, no fluff.",
+  "icons": [
+    {
+      "src": "/logo-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/logo-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "theme_color": "#FF6B35",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "start_url": "/"
+}
