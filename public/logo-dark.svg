@@ -1,0 +1,16 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF6B35"/>
+      <stop offset="100%" stop-color="#F7931E"/>
+    </linearGradient>
+  </defs>
+  <!-- Transparent background, gradient clock -->
+  <circle cx="256" cy="256" r="160" fill="none" stroke="url(#grad)" stroke-width="24" stroke-linecap="round"/>
+  <!-- Minute hand -->
+  <line x1="256" y1="256" x2="256" y2="130" stroke="url(#grad)" stroke-width="20" stroke-linecap="round"/>
+  <!-- Hour hand -->
+  <line x1="256" y1="256" x2="320" y2="180" stroke="url(#grad)" stroke-width="24" stroke-linecap="round"/>
+  <!-- Center dot -->
+  <circle cx="256" cy="256" r="14" fill="url(#grad)"/>
+</svg>
