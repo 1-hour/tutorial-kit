@@ -62,14 +62,19 @@ export async function generateMetadata({
       title: tut.frontmatter.title,
       description: tut.frontmatter.description,
       url: `${site.url}/${loc}/tutorials/${slug}/`,
+      siteName: site.title[loc],
+      locale: loc === 'zh' ? 'zh_CN' : 'en_US',
       type: 'article',
       publishedTime: tut.meta.date,
       tags: tut.meta.tags,
+      images: site.social?.ogImage ? [{ url: site.social.ogImage, width: 1200, height: 630 }] : undefined,
     },
     twitter: {
-      card: 'summary_large_image',
+      card: (site.social?.twitterCard as 'summary_large_image' | 'summary') || 'summary_large_image',
       title: tut.frontmatter.title,
       description: tut.frontmatter.description,
+      creator: site.author.twitter ? `@${site.author.twitter}` : undefined,
+      images: site.social?.ogImage ? [site.social.ogImage] : undefined,
     },
   };
 }

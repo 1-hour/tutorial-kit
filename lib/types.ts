@@ -29,6 +29,19 @@ export interface SiteConfig {
     primary?: string;
     primaryGradientEnd?: string;
   };
+  analytics?: {
+    plausible?: {
+      domain: string;
+      src?: string;
+    };
+    googleAnalytics?: {
+      id: string;
+    };
+  };
+  social?: {
+    ogImage?: string;
+    twitterCard?: string;
+  };
 }
 
 /**

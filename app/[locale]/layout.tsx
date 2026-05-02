@@ -45,12 +45,14 @@ export async function generateMetadata({
       siteName: site.title[loc],
       locale: loc === 'zh' ? 'zh_CN' : 'en_US',
       type: 'website',
+      images: site.social?.ogImage ? [{ url: site.social.ogImage, width: 1200, height: 630 }] : undefined,
     },
     twitter: {
-      card: 'summary_large_image',
+      card: (site.social?.twitterCard as 'summary_large_image' | 'summary') || 'summary_large_image',
       title: site.title[loc],
       description: site.description[loc],
       creator: site.author.twitter ? `@${site.author.twitter}` : undefined,
+      images: site.social?.ogImage ? [site.social.ogImage] : undefined,
     },
   };
 }
