@@ -37,6 +37,11 @@ export interface SiteConfig {
     googleAnalytics?: {
       id: string;
     };
+    counterscale?: {
+      siteId: string;
+      dashboardUrl: string;
+      password?: string;
+    };
   };
   social?: {
     ogImage?: string;

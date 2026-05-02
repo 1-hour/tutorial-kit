@@ -5,6 +5,7 @@ export function Analytics() {
   const site = getSiteConfig();
   const plausible = site.analytics?.plausible;
   const ga = site.analytics?.googleAnalytics;
+  const counterscale = site.analytics?.counterscale;
 
   return (
     <>
@@ -31,6 +32,25 @@ export function Analytics() {
             `}
           </Script>
         </>
+      )}
+      {counterscale && counterscale.dashboardUrl && (
+        <Script id="counterscale-init" strategy="afterInteractive">
+          {`
+            (function() {
+              window.counterscale = {
+                q: [["set", "siteId", "${counterscale.siteId}"], ["trackPageview"]]
+              };
+            })();
+          `}
+        </Script>
+      )}
+      {counterscale && counterscale.dashboardUrl && (
+        <Script
+          id="counterscale-tracker"
+          src={`${counterscale.dashboardUrl}/tracker.js`}
+          strategy="afterInteractive"
+          defer
+        />
       )}
     </>
   );
