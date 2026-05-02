@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { getSiteConfig, getUIStrings } from '@/lib/content';
 import type { Locale } from '@/lib/types';
 import { LangSwitcher } from './lang-switcher';
+import { SearchDialog } from './search-dialog';
 
 export function Header({ locale }: { locale: Locale }) {
   const site = getSiteConfig();
@@ -33,6 +34,11 @@ export function Header({ locale }: { locale: Locale }) {
             <Link href={`/${locale}/about/`} className="text-muted-foreground hover:text-foreground transition-colors">
               {ui.nav.about}
             </Link>
+            <SearchDialog
+              locale={locale}
+              placeholder={locale === 'zh' ? '搜索教程...' : 'Search tutorials...'}
+              noResults={ui.list.no_results}
+            />
             <LangSwitcher currentLocale={locale} />
           </nav>
         </div>

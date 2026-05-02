@@ -34,6 +34,9 @@ export async function generateMetadata({
     alternates: {
       canonical: `/${loc}/`,
       languages: alternates,
+      types: {
+        'application/rss+xml': `/${loc}/rss.xml`,
+      },
     },
     openGraph: {
       title: site.title[loc],

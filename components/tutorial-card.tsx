@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { getCategoryBySlug, getUIStrings } from '@/lib/content';
+import { CompletedBadge } from './completed-badge';
 import type { Locale, TutorialSummary } from '@/lib/types';
 
 const CATEGORY_COLORS: Record<string, string> = {
@@ -63,6 +64,7 @@ export function TutorialCard({
           <span>{tutorial.duration} {ui.common.min}</span>
           <span>•</span>
           <span>{ui.difficulty[tutorial.difficulty]}</span>
+          <CompletedBadge slug={tutorial.slug} locale={locale} />
         </div>
         <h3 className="font-semibold text-base mb-1.5 leading-snug">{tutorial.title}</h3>
         <p className="text-sm text-muted-foreground line-clamp-2">{tutorial.description}</p>

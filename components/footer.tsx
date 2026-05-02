@@ -46,6 +46,7 @@ export function Footer({ locale }: { locale: Locale }) {
               {site.author.email && (
                 <li><a href={`mailto:${site.author.email}`} className="hover:text-foreground">Email</a></li>
               )}
+              <li><a href={`/${locale}/rss.xml`} className="hover:text-foreground">RSS</a></li>
             </ul>
           </div>
 
