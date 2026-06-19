@@ -113,7 +113,15 @@ export function getTutorialMeta(slug: string): TutorialMeta | null {
   const metaPath = path.join(getContentDir(), 'tutorials', slug, 'meta.yaml');
   if (!fs.existsSync(metaPath)) return null;
   const raw = fs.readFileSync(metaPath, 'utf-8');
-  return yaml.load(raw) as TutorialMeta;
+  const meta = yaml.load(raw) as TutorialMeta;
+  // js-yaml parses unquoted `date: 2026-06-20` into a JS Date. Normalize to
+  // a YYYY-MM-DD string so downstream (metadata, JSON-LD, sort) gets a stable
+  // primitive.
+  if (meta && (meta as unknown as { date: unknown }).date instanceof Date) {
+    const d = (meta as unknown as { date: Date }).date;
+    (meta as unknown as { date: string }).date = d.toISOString().slice(0, 10);
+  }
+  return meta;
 }
 
 /**
