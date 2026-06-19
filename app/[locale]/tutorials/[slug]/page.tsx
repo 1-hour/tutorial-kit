@@ -51,6 +51,11 @@ export async function generateMetadata({
     alternates[l] = `${site.url}/${l}/tutorials/${slug}/`;
   }
 
+  // Per-tutorial OG image. Falls back to global ogImage if file is missing
+  // (the framework can't check fs at build time on edge, so we always emit
+  // the per-slug URL — the og-gen step writes the file before deploy).
+  const ogImageUrl = `${site.url}/og/${slug}-${loc}.png`;
+
   return {
     title: tut.frontmatter.title,
     description: tut.frontmatter.description,
@@ -67,14 +72,14 @@ export async function generateMetadata({
       type: 'article',
       publishedTime: tut.meta.date,
       tags: tut.meta.tags,
-      images: site.social?.ogImage ? [{ url: site.social.ogImage, width: 1200, height: 630 }] : undefined,
+      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: tut.frontmatter.title }],
     },
     twitter: {
       card: (site.social?.twitterCard as 'summary_large_image' | 'summary') || 'summary_large_image',
       title: tut.frontmatter.title,
       description: tut.frontmatter.description,
       creator: site.author.twitter ? `@${site.author.twitter}` : undefined,
-      images: site.social?.ogImage ? [site.social.ogImage] : undefined,
+      images: [ogImageUrl],
     },
   };
 }
