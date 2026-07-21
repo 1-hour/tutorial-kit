@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import {
   getCategories,
   getUIStrings,
@@ -6,11 +7,24 @@ import {
   isValidLocale,
   getLocales,
 } from '@/lib/content';
+import { buildAlternates } from '@/lib/metadata';
 import type { Locale } from '@/lib/types';
 import { notFound } from 'next/navigation';
 
 export async function generateStaticParams() {
   return getLocales().map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  if (!isValidLocale(locale)) return {};
+  return {
+    alternates: buildAlternates('categories', locale as Locale),
+  };
 }
 
 const CATEGORY_GRADIENT: Record<string, string> = {

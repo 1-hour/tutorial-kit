@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { getSiteConfig, getLocales, isValidLocale } from '@/lib/content';
+import { buildAlternates } from '@/lib/metadata';
 import type { Locale } from '@/lib/types';
 import { notFound } from 'next/navigation';
 
@@ -19,10 +20,6 @@ export async function generateMetadata({
   if (!isValidLocale(locale)) return {};
 
   const loc = locale as Locale;
-  const alternates: Record<string, string> = {};
-  for (const l of site.locales) {
-    alternates[l] = `${site.url}/${l}/`;
-  }
 
   return {
     metadataBase: new URL(site.url),
@@ -32,8 +29,11 @@ export async function generateMetadata({
     },
     description: site.description[loc],
     alternates: {
-      canonical: `/${loc}/`,
-      languages: alternates,
+      // NOTE: canonical is deliberately NOT set here. Next.js metadata inherits,
+      // so any canonical set at layout level would be inherited by every child
+      // route and point every page to the locale home. Each page.tsx sets its
+      // own canonical via `buildAlternates(pathname, locale)`.
+      // Only rss type stays here since it's genuinely locale-scoped, not page-scoped.
       types: {
         'application/rss+xml': `/${loc}/rss.xml`,
       },

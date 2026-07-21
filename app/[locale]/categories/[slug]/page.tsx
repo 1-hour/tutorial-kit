@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { TutorialCard } from '@/components/tutorial-card';
 import {
   getCategories,
@@ -7,6 +8,7 @@ import {
   isValidLocale,
   getLocales,
 } from '@/lib/content';
+import { buildAlternates } from '@/lib/metadata';
 import type { Locale } from '@/lib/types';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
@@ -19,6 +21,23 @@ export async function generateStaticParams() {
     }
   }
   return params;
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}): Promise<Metadata> {
+  const { locale, slug } = await params;
+  if (!isValidLocale(locale)) return {};
+  const category = getCategoryBySlug(slug);
+  if (!category) return {};
+  const loc = locale as Locale;
+  return {
+    title: category.name[loc],
+    description: category.description?.[loc],
+    alternates: buildAlternates(`categories/${slug}`, loc),
+  };
 }
 
 export default async function CategoryPage({

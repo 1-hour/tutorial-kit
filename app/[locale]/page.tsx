@@ -1,8 +1,22 @@
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import { TutorialCard } from '@/components/tutorial-card';
 import { getAllTutorials, getUIStrings, getCategories, isValidLocale } from '@/lib/content';
+import { buildAlternates } from '@/lib/metadata';
 import type { Locale } from '@/lib/types';
 import { notFound } from 'next/navigation';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  if (!isValidLocale(locale)) return {};
+  return {
+    alternates: buildAlternates('', locale as Locale),
+  };
+}
 
 export default async function HomePage({
   params,

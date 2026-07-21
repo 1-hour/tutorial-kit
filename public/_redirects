@@ -1,3 +1,10 @@
-# Custom 404 handler for Cloudflare Pages
-# Use rewrite (not redirect) with !=200 matcher
-/* /404 404
+# _redirects — Cloudflare Workers static assets redirects
+#
+# Docs: https://developers.cloudflare.com/workers/static-assets/redirects/
+#
+# Root URL must NOT be a standalone document — it's a locale gateway.
+# Send it to the default locale home via a real 302 (temporary, because
+# we may later want language negotiation based on Accept-Language).
+#
+# Format: <source> <destination> [status_code, default 302]
+/  /en/  302

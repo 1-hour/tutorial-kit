@@ -14,6 +14,7 @@ import {
   getTutorialAvailableLocales,
   getLocales,
 } from '@/lib/content';
+import { buildAlternates } from '@/lib/metadata';
 import { ReadingProgress } from '@/components/reading-progress';
 import { ReadingTimer } from '@/components/reading-timer';
 import { MDXContent } from '@/components/mdx-content';
@@ -46,10 +47,6 @@ export async function generateMetadata({
   if (!tut) return {};
 
   const site = getSiteConfig();
-  const alternates: Record<string, string> = {};
-  for (const l of tut.availableLocales) {
-    alternates[l] = `${site.url}/${l}/tutorials/${slug}/`;
-  }
 
   // Per-tutorial OG image. Falls back to global ogImage if file is missing
   // (the framework can't check fs at build time on edge, so we always emit
@@ -59,10 +56,11 @@ export async function generateMetadata({
   return {
     title: tut.frontmatter.title,
     description: tut.frontmatter.description,
-    alternates: {
-      canonical: `/${loc}/tutorials/${slug}/`,
-      languages: alternates,
-    },
+    alternates: buildAlternates(
+      `tutorials/${slug}`,
+      loc,
+      tut.availableLocales as Locale[],
+    ),
     openGraph: {
       title: tut.frontmatter.title,
       description: tut.frontmatter.description,
