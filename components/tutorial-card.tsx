@@ -43,15 +43,31 @@ export function TutorialCard({
   const ui = getUIStrings(locale);
   const color = category?.color || 'blue';
 
+  // Per-tutorial OG image; falls back to gradient+emoji if the file is
+  // missing on production (browser hides broken image via onError → CSS).
+  const coverUrl = `/og/${tutorial.slug}-${locale}.png`;
+
   return (
     <Link
       href={`/${locale}/tutorials/${tutorial.slug}/`}
       className="block bg-background rounded-xl border overflow-hidden hover:-translate-y-1 hover:shadow-lg transition-all duration-200"
     >
       <div
-        className={`${compact ? 'h-24' : 'h-32'} bg-gradient-to-br ${CATEGORY_GRADIENT[color] || CATEGORY_GRADIENT.blue} flex items-center justify-center text-5xl`}
+        className={`relative ${compact ? 'h-28' : 'h-40'} bg-gradient-to-br ${CATEGORY_GRADIENT[color] || CATEGORY_GRADIENT.blue} overflow-hidden`}
       >
-        {category?.icon || '📚'}
+        {/* Fallback layer: category emoji on gradient. Always renders;
+            visible whenever the cover image is missing / transparent. */}
+        <div className="absolute inset-0 flex items-center justify-center text-5xl pointer-events-none">
+          {category?.icon || '📚'}
+        </div>
+        {/* Cover image (OG) as CSS background. If the file is missing at
+            runtime the browser silently drops it and the emoji shows through.
+            Using background-image avoids Server-Component onError handlers. */}
+        <div
+          className="absolute inset-0 bg-center bg-cover"
+          style={{ backgroundImage: `url('${coverUrl}')` }}
+          aria-hidden="true"
+        />
       </div>
       <div className="p-5">
         <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground mb-2">
