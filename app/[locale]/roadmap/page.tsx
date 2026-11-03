@@ -131,6 +131,7 @@ export default async function RoadmapPage({
           browse: '浏览全部教程',
           layerTutorials: '篇教程',
           layerUpcoming: '即将上线',
+          deepBadge: '深度推荐',
           startHere: '从这里开始',
           empty: '该层暂无已发布教程',
           howtoTitle: '怎么用这张图？',
@@ -153,6 +154,7 @@ export default async function RoadmapPage({
           browse: 'Browse all tutorials',
           layerTutorials: 'tutorials',
           layerUpcoming: 'coming soon',
+          deepBadge: 'Deep dive',
           startHere: 'Start here',
           empty: 'No published tutorials in this layer yet',
           howtoTitle: 'How to use this map',
@@ -236,6 +238,11 @@ export default async function RoadmapPage({
                       <h2 className="text-lg font-semibold">
                         {layer.name[loc]}
                       </h2>
+                      {layer.emphasis === 'deep' && (
+                        <span className={`inline-flex items-center rounded-md ${c.bg} ${c.text} px-1.5 py-0.5 text-[10px] font-bold tracking-wide`}>
+                          {copy.deepBadge}
+                        </span>
+                      )}
                       <span className={`text-xs font-medium ${c.text}`}>
                         {layer.items.length} {copy.layerTutorials}
                       </span>

@@ -190,6 +190,8 @@ export interface RoadmapLayer {
   subtitle: Record<Locale, string>;
   categories: string[];
   tutorials: string[];
+  /** Positioning emphasis: deep (技术深度主打), core (核心), side (辅助/可选) */
+  emphasis?: 'deep' | 'core' | 'side';
 }
 
 export interface Roadmap {
