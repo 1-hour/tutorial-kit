@@ -263,3 +263,15 @@ export function countUpcomingByCategories(categories: string[]): number {
   const set = new Set(categories);
   return topics.filter((t) => t.status === 'pending' && set.has(t.category)).length;
 }
+
+/**
+ * Load MDTI test data (cached per process)
+ */
+let mdtiCache: import('./types').MDTIData | null = null;
+export function getMDTI(): import('./types').MDTIData {
+  if (mdtiCache) return mdtiCache;
+  const filePath = path.join(getContentDir(), 'mdti.yaml');
+  const raw = fs.readFileSync(filePath, 'utf-8');
+  mdtiCache = yaml.load(raw) as import('./types').MDTIData;
+  return mdtiCache;
+}

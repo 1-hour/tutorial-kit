@@ -24,6 +24,15 @@ export function Header({ locale }: { locale: Locale }) {
             <Link href={`/${locale}/roadmap/`} className="text-muted-foreground hover:text-foreground transition-colors">
               {ui.nav.roadmap}
             </Link>
+            <Link
+              href={`/${locale}/mdti/`}
+              className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {ui.nav.mdti}
+              <span className="inline-flex items-center rounded-md bg-foreground text-background px-1.5 py-0.5 text-[10px] font-bold tracking-wide">
+                NEW
+              </span>
+            </Link>
             <Link href={`/${locale}/categories/`} className="text-muted-foreground hover:text-foreground transition-colors">
               {ui.nav.categories}
             </Link>

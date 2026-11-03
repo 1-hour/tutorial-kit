@@ -123,6 +123,7 @@ export interface UIStrings {
     tutorials: string;
     categories: string;
     roadmap: string;
+    mdti: string;
     about: string;
   };
   home: {
@@ -193,4 +194,30 @@ export interface RoadmapLayer {
 
 export interface Roadmap {
   layers: RoadmapLayer[];
+}
+
+/**
+ * MDTI (AI Learning Personality Test)
+ */
+export type MDTIDim = 'EI' | 'SN' | 'TF' | 'JP';
+
+export interface MDTIQuestion {
+  id: number;
+  dim: MDTIDim;
+  text: Record<Locale, string>;
+  options: Array<{
+    weight: number; // +1 偏左字母 (E/S/T/J), -1 偏右 (I/N/F/P)
+    text: Record<Locale, string>;
+  }>;
+}
+
+export interface MDTIResult {
+  layer: string; // 对应 roadmap layer id
+  title: Record<Locale, string>;
+  desc: Record<Locale, string>;
+}
+
+export interface MDTIData {
+  questions: MDTIQuestion[];
+  results: Record<string, MDTIResult>;
 }
