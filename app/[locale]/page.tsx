@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { TutorialCard } from '@/components/tutorial-card';
-import { getAllTutorials, getUIStrings, getCategories, isValidLocale } from '@/lib/content';
+import { getAllTutorials, getUIStrings, getCategories, getRoadmap, isValidLocale } from '@/lib/content';
 import { buildAlternates } from '@/lib/metadata';
 import type { Locale } from '@/lib/types';
 import { notFound } from 'next/navigation';
@@ -30,6 +30,22 @@ export default async function HomePage({
   const ui = getUIStrings(loc);
   const tutorials = getAllTutorials(loc).slice(0, 3);
   const categories = getCategories();
+  const roadmap = getRoadmap();
+
+  const roadCopy =
+    loc === 'zh'
+      ? {
+          eyebrow: 'AI 学习路线图',
+          title: '不知道先学哪门课？先看清自己缺哪一层。',
+          desc: '6 层能力地图：大脑、工具、创作、构建、增长、变现。公开查看完整路线，选好方向再决定从哪篇开始。',
+          cta: '查看学习路线图',
+        }
+      : {
+          eyebrow: 'AI Learning Roadmap',
+          title: 'Not sure which course to start with? Find out which layer you are missing.',
+          desc: 'Six capability layers: foundation, tools, creation, building, growth, and monetization. Browse the full map, then pick your first tutorial.',
+          cta: 'View the roadmap',
+        };
 
   const featureKeys = ['timeboxed', 'outcome', 'checkpoint', 'beginner', 'nextsteps', 'bonus'];
 
@@ -62,6 +78,45 @@ export default async function HomePage({
             {ui.nav.about}
           </Link>
         </div>
+      </section>
+
+      {/* Roadmap teaser — 6-layer AI learning map */}
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+        <Link
+          href={`/${loc}/roadmap/`}
+          className="group block rounded-2xl border bg-gradient-to-br from-muted/50 to-background p-6 sm:p-8 hover:shadow-md transition-shadow"
+        >
+          <div className="flex flex-col lg:flex-row lg:items-center gap-6">
+            <div className="min-w-0 flex-1">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                {roadCopy.eyebrow}
+              </p>
+              <h2 className="text-2xl sm:text-3xl font-bold tracking-tight leading-snug">
+                {roadCopy.title}
+              </h2>
+              <p className="mt-3 text-muted-foreground text-sm sm:text-base max-w-2xl">
+                {roadCopy.desc}
+              </p>
+              <div className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-foreground">
+                {roadCopy.cta}
+                <span aria-hidden className="transition-transform group-hover:translate-x-0.5">
+                  →
+                </span>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-2 lg:max-w-sm">
+              {roadmap.layers.map((layer) => (
+                <div
+                  key={layer.id}
+                  className="inline-flex items-center gap-1.5 rounded-lg border bg-background px-2.5 py-1.5 text-xs"
+                >
+                  <span aria-hidden>{layer.icon}</span>
+                  <span className="font-medium">{layer.name[loc]}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </Link>
       </section>
 
       {/* Stats */}

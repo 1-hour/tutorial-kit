@@ -126,6 +126,7 @@ export default async function RoadmapPage({
           start: '从第一层开始',
           browse: '浏览全部教程',
           layerTutorials: '篇教程',
+          startHere: '从这里开始',
           empty: '该层暂无已发布教程',
           howtoTitle: '怎么用这张图？',
           howto: [
@@ -145,6 +146,7 @@ export default async function RoadmapPage({
           start: 'Start from layer one',
           browse: 'Browse all tutorials',
           layerTutorials: 'tutorials',
+          startHere: 'Start here',
           empty: 'No published tutorials in this layer yet',
           howtoTitle: 'How to use this map',
           howto: [
@@ -238,13 +240,22 @@ export default async function RoadmapPage({
                       </p>
                     ) : (
                       <ul className="mt-3 flex flex-wrap gap-2">
-                        {layer.items.map((t) => (
+                        {layer.items.map((t, i) => (
                           <li key={t.slug}>
                             <Link
                               href={`/${loc}/tutorials/${t.slug}/`}
                               className="group inline-flex items-center gap-1.5 rounded-lg border border-border/60 bg-background/80 px-3 py-1.5 text-sm hover:border-border hover:bg-background transition-colors"
                             >
-                              <span className={`size-1.5 rounded-full ${c.dot}`} aria-hidden />
+                              {i === 0 ? (
+                                <span
+                                  className={`inline-flex items-center gap-1 rounded-md ${c.dot} text-white px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide`}
+                                >
+                                  <span aria-hidden>★</span>
+                                  {copy.startHere}
+                                </span>
+                              ) : (
+                                <span className={`size-1.5 rounded-full ${c.dot}`} aria-hidden />
+                              )}
                               <span className="truncate">{t.title}</span>
                               <span className="text-xs text-muted-foreground tabular-nums shrink-0">
                                 {t.duration}
