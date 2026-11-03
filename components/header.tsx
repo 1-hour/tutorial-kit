@@ -21,6 +21,9 @@ export function Header({ locale }: { locale: Locale }) {
             <Link href={`/${locale}/tutorials/`} className="text-muted-foreground hover:text-foreground transition-colors">
               {ui.nav.tutorials}
             </Link>
+            <Link href={`/${locale}/roadmap/`} className="text-muted-foreground hover:text-foreground transition-colors">
+              {ui.nav.roadmap}
+            </Link>
             <Link href={`/${locale}/categories/`} className="text-muted-foreground hover:text-foreground transition-colors">
               {ui.nav.categories}
             </Link>

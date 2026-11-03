@@ -122,6 +122,7 @@ export interface UIStrings {
   nav: {
     tutorials: string;
     categories: string;
+    roadmap: string;
     about: string;
   };
   home: {
@@ -175,4 +176,20 @@ export interface UIStrings {
   common: {
     min: string;
   };
+}
+
+/**
+ * Roadmap layer (roadmap.yaml)
+ */
+export interface RoadmapLayer {
+  id: string;
+  icon: string;
+  color: string;
+  name: Record<Locale, string>;
+  subtitle: Record<Locale, string>;
+  tutorials: string[];
+}
+
+export interface Roadmap {
+  layers: RoadmapLayer[];
 }

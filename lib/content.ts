@@ -16,6 +16,7 @@ import type {
   Tutorial,
   TutorialSummary,
   UIStrings,
+  Roadmap,
 } from './types';
 
 /**
@@ -216,4 +217,16 @@ export function getAllTutorials(locale: Locale): TutorialSummary[] {
  */
 export function getTutorialsByCategory(locale: Locale, categorySlug: string): TutorialSummary[] {
   return getAllTutorials(locale).filter((t) => t.category === categorySlug);
+}
+
+/**
+ * Load roadmap (cached per process)
+ */
+let roadmapCache: Roadmap | null = null;
+export function getRoadmap(): Roadmap {
+  if (roadmapCache) return roadmapCache;
+  const filePath = path.join(getContentDir(), 'roadmap.yaml');
+  const raw = fs.readFileSync(filePath, 'utf-8');
+  roadmapCache = yaml.load(raw) as Roadmap;
+  return roadmapCache;
 }
