@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
+import { ToastProvider } from '@/components/toast';
 import { getSiteConfig, getLocales, isValidLocale } from '@/lib/content';
 import { buildAlternates } from '@/lib/metadata';
 import type { Locale } from '@/lib/types';
@@ -71,10 +72,10 @@ export default async function LocaleLayout({
   const loc = locale as Locale;
 
   return (
-    <>
+    <ToastProvider>
       <Header locale={loc} />
       <main className="min-h-[calc(100vh-8rem)]">{children}</main>
       <Footer locale={loc} />
-    </>
+    </ToastProvider>
   );
 }

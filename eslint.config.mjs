@@ -13,6 +13,13 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
   ]),
+  // Site-wide rules
+  {
+    rules: {
+      // alert() is bad UX — always use the Toast provider instead.
+      "no-alert": "error",
+    },
+  },
 ]);
 
 export default eslintConfig;

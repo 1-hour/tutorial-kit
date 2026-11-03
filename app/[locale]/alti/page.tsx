@@ -88,6 +88,13 @@ export default async function ALTIPage({
           retake: '重测一次',
           share: '分享结果',
           shareText: '我的 AI 学习人格是 {type} · {title}，推荐从「{layer}」开始 —— 来 1hour.guide 测测你的：',
+          shareCopyText: '复制文案',
+          shareCopyLink: '复制链接',
+          shareDownloadImage: '下载分享图',
+          shareNative: '系统分享',
+          toastLinkCopied: '链接已复制',
+          toastTextCopied: '文案已复制',
+          toastShareFailed: '分享失败，请手动复制',
         }
       : {
           eyebrow: 'AI Learning Personality',
@@ -104,6 +111,13 @@ export default async function ALTIPage({
           retake: 'Retake',
           share: 'Share result',
           shareText: "My AI learning type is {type} · {title}. I'm starting with {layer} — take the test at 1hour.guide:",
+          shareCopyText: 'Copy text',
+          shareCopyLink: 'Copy link',
+          shareDownloadImage: 'Download image',
+          shareNative: 'System share',
+          toastLinkCopied: 'Link copied',
+          toastTextCopied: 'Text copied',
+          toastShareFailed: 'Share failed — please copy manually',
         };
 
   return (

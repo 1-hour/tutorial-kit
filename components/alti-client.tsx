@@ -1,7 +1,9 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
+import { useToast } from './toast';
+import { ALTIShareImage } from './alti-share-image';
 import type { Locale, ALTIData, ALTIResult } from '@/lib/types';
 
 type Props = {
@@ -27,6 +29,13 @@ type Props = {
     retake: string;
     share: string;
     shareText: string;
+    shareCopyText: string;
+    shareCopyLink: string;
+    shareDownloadImage: string;
+    shareNative: string;
+    toastLinkCopied: string;
+    toastTextCopied: string;
+    toastShareFailed: string;
   };
 };
 
@@ -93,10 +102,13 @@ function matchResult(
 }
 
 export function ALTIClient({ locale, data, layerIndex, copy }: Props) {
+  const { toast } = useToast();
   const questions = data.questions;
   const [idx, setIdx] = useState(0);
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [done, setDone] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
+  const svgRef = useRef<HTMLDivElement>(null);
 
   const total = questions.length;
   const current = questions[idx];
@@ -126,27 +138,110 @@ export function ALTIClient({ locale, data, layerIndex, copy }: Props) {
     setDone(false);
   };
 
-  const share = async () => {
-    if (!picked?.match) return;
+  const buildShareText = () => {
+    if (!picked?.match) return { text: '', url: '', full: '' };
     const text = copy.shareText
       .replace('{type}', picked.type)
       .replace('{title}', picked.match.result.title[locale])
       .replace('{layer}', layerIndex[picked.match.result.layer]?.name ?? '');
     const url = typeof window !== 'undefined' ? window.location.href : '';
-    const full = `${text}\n${url}`;
-    if (navigator.share) {
-      try {
-        await navigator.share({ text: full, url });
-        return;
-      } catch {
-        /* user cancelled */
-      }
-    }
+    return { text, url, full: `${text}\n${url}` };
+  };
+
+  const shareImageProps = () => {
+    if (!picked?.match) return null;
+    const li = layerIndex[picked.match.result.layer];
+    return {
+      type: picked.type,
+      title: picked.match.result.title[locale],
+      layer: li?.name ?? '',
+      icon: li?.icon ?? '🧭',
+      color: li?.color ?? 'blue',
+      locale,
+    };
+  };
+
+  const copyText = async () => {
+    const { full } = buildShareText();
     try {
       await navigator.clipboard.writeText(full);
-      alert(locale === 'zh' ? '已复制结果到剪贴板' : 'Copied to clipboard');
+      toast(copy.toastTextCopied, 'success');
+      setShareOpen(false);
     } catch {
-      /* ignore */
+      toast(copy.toastShareFailed, 'error');
+    }
+  };
+
+  const copyLink = async () => {
+    const { url } = buildShareText();
+    try {
+      await navigator.clipboard.writeText(url);
+      toast(copy.toastLinkCopied, 'success');
+      setShareOpen(false);
+    } catch {
+      toast(copy.toastShareFailed, 'error');
+    }
+  };
+
+  const downloadImage = async () => {
+    const svgEl = svgRef.current?.querySelector('svg');
+    if (!svgEl) {
+      toast(copy.toastShareFailed, 'error');
+      return;
+    }
+    try {
+      // Serialize SVG → data URL → canvas → PNG
+      const serializer = new XMLSerializer();
+      const svgStr = serializer.serializeToString(svgEl);
+      const svgBlob = new Blob([svgStr], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(svgBlob);
+
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      await new Promise<void>((resolve, reject) => {
+        img.onload = () => resolve();
+        img.onerror = () => reject(new Error('image load failed'));
+        img.src = url;
+      });
+
+      const canvas = document.createElement('canvas');
+      canvas.width = 1200;
+      canvas.height = 630;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) throw new Error('no canvas ctx');
+      ctx.drawImage(img, 0, 0, 1200, 630);
+      URL.revokeObjectURL(url);
+
+      canvas.toBlob((blob) => {
+        if (!blob) {
+          toast(copy.toastShareFailed, 'error');
+          return;
+        }
+        const dlUrl = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = dlUrl;
+        a.download = `alti-${picked?.type ?? 'result'}.png`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(dlUrl);
+        setShareOpen(false);
+      }, 'image/png');
+    } catch {
+      toast(copy.toastShareFailed, 'error');
+    }
+  };
+
+  const nativeShare = async () => {
+    const { full, url } = buildShareText();
+    if (!navigator.share) {
+      return copyText();
+    }
+    try {
+      await navigator.share({ text: full, url });
+      setShareOpen(false);
+    } catch {
+      /* user cancelled or failed */
     }
   };
 
@@ -201,6 +296,22 @@ export function ALTIClient({ locale, data, layerIndex, copy }: Props) {
           )}
         </div>
 
+        {/* Share preview card */}
+        <div className="mt-10">
+          <p className="text-xs uppercase tracking-wider text-muted-foreground font-semibold text-center mb-3">
+            {copy.share}
+          </p>
+          <div
+            ref={svgRef}
+            className="rounded-2xl border overflow-hidden bg-background shadow-sm"
+          >
+            {(() => {
+              const p = shareImageProps();
+              return p ? <ALTIShareImage {...p} /> : null;
+            })()}
+          </div>
+        </div>
+
         {/* Actions */}
         <div className="mt-6 flex flex-wrap gap-3 justify-center">
           <Link
@@ -209,13 +320,48 @@ export function ALTIClient({ locale, data, layerIndex, copy }: Props) {
           >
             {copy.viewRoadmap}
           </Link>
-          <button
-            type="button"
-            onClick={share}
-            className="inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium hover:bg-muted transition-colors"
-          >
-            {copy.share}
-          </button>
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setShareOpen((v) => !v)}
+              aria-expanded={shareOpen}
+              aria-haspopup="menu"
+              className="inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium hover:bg-muted transition-colors"
+            >
+              {copy.share}
+              <span aria-hidden>↗</span>
+            </button>
+            {shareOpen && (
+              <>
+                {/* click-outside backdrop */}
+                <button
+                  type="button"
+                  aria-label="close share menu"
+                  onClick={() => setShareOpen(false)}
+                  className="fixed inset-0 z-30 cursor-default"
+                />
+                <div
+                  role="menu"
+                  className="absolute left-1/2 top-full z-40 mt-2 w-56 -translate-x-1/2 overflow-hidden rounded-xl border bg-background shadow-lg"
+                >
+                  {typeof navigator !== 'undefined' && 'share' in navigator && (
+                    <ShareMenuItem onClick={nativeShare} icon="↗">
+                      {copy.shareNative}
+                    </ShareMenuItem>
+                  )}
+                  <ShareMenuItem onClick={downloadImage} icon="⬇">
+                    {copy.shareDownloadImage}
+                  </ShareMenuItem>
+                  <ShareMenuItem onClick={copyText} icon="✎">
+                    {copy.shareCopyText}
+                  </ShareMenuItem>
+                  <ShareMenuItem onClick={copyLink} icon="🔗">
+                    {copy.shareCopyLink}
+                  </ShareMenuItem>
+                </div>
+              </>
+            )}
+          </div>
           <button
             type="button"
             onClick={retake}
@@ -288,5 +434,29 @@ export function ALTIClient({ locale, data, layerIndex, copy }: Props) {
         </button>
       )}
     </div>
+  );
+}
+
+function ShareMenuItem({
+  onClick,
+  icon,
+  children,
+}: {
+  onClick: () => void;
+  icon: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      role="menuitem"
+      onClick={onClick}
+      className="flex w-full items-center gap-3 px-4 py-2.5 text-sm hover:bg-muted transition-colors text-left"
+    >
+      <span aria-hidden className="text-base">
+        {icon}
+      </span>
+      <span>{children}</span>
+    </button>
   );
 }
