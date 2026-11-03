@@ -25,10 +25,10 @@ export function Header({ locale }: { locale: Locale }) {
               {ui.nav.roadmap}
             </Link>
             <Link
-              href={`/${locale}/mdti/`}
+              href={`/${locale}/alti/`}
               className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors"
             >
-              {ui.nav.mdti}
+              {ui.nav.alti}
               <span className="inline-flex items-center rounded-md bg-foreground text-background px-1.5 py-0.5 text-[10px] font-bold tracking-wide">
                 NEW
               </span>

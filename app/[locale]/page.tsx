@@ -39,20 +39,20 @@ export default async function HomePage({
           title: '不知道先学哪门课？先看清自己缺哪一层。',
           desc: '6 层能力地图：大脑、工具、创作、构建、增长、变现。公开查看完整路线，选好方向再决定从哪篇开始。',
           cta: '查看学习路线图',
-          mdtiTitle: '不想从头看？',
-          mdtiDesc: '1 分钟测一下你的 AI 学习人格，直接推荐你该从哪一层起步。',
-          mdtiCta: '开始测试',
-          mdtiBadge: 'NEW',
+          altiTitle: '不想从头看？',
+          altiDesc: '1 分钟测一下你的 AI 学习人格，直接推荐你该从哪一层起步。',
+          altiCta: '开始测试',
+          altiBadge: 'NEW',
         }
       : {
           eyebrow: 'AI Learning Roadmap',
           title: 'Not sure which course to start with? Find out which layer you are missing.',
           desc: 'Six capability layers: foundation, tools, creation, building, growth, and monetization. Browse the full map, then pick your first tutorial.',
           cta: 'View the roadmap',
-          mdtiTitle: 'Skip the browsing?',
-          mdtiDesc: 'Take a 1-minute personality test and we will recommend your starting layer directly.',
-          mdtiCta: 'Take the test',
-          mdtiBadge: 'NEW',
+          altiTitle: 'Skip the browsing?',
+          altiDesc: 'Take a 1-minute personality test and we will recommend your starting layer directly.',
+          altiCta: 'Take the test',
+          altiBadge: 'NEW',
         };
 
   const featureKeys = ['timeboxed', 'outcome', 'checkpoint', 'beginner', 'nextsteps', 'bonus'];
@@ -126,27 +126,27 @@ export default async function HomePage({
           </div>
         </Link>
 
-        {/* MDTI quick link */}
+        {/* ALTI quick link */}
         <Link
-          href={`/${loc}/mdti/`}
+          href={`/${loc}/alti/`}
           className="group mt-4 flex items-center justify-between gap-4 rounded-2xl border bg-background p-4 sm:p-5 hover:shadow-md transition-shadow"
         >
           <div className="flex items-start gap-3 min-w-0">
             <span className="text-2xl shrink-0" aria-hidden>🧭</span>
             <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <h3 className="font-semibold text-base">{roadCopy.mdtiTitle}</h3>
+                <h3 className="font-semibold text-base">{roadCopy.altiTitle}</h3>
                 <span className="inline-flex items-center rounded-md bg-foreground text-background px-1.5 py-0.5 text-[10px] font-bold tracking-wide">
-                  {roadCopy.mdtiBadge}
+                  {roadCopy.altiBadge}
                 </span>
               </div>
               <p className="text-sm text-muted-foreground mt-0.5">
-                {roadCopy.mdtiDesc}
+                {roadCopy.altiDesc}
               </p>
             </div>
           </div>
           <span className="text-sm font-medium shrink-0 inline-flex items-center gap-1">
-            {roadCopy.mdtiCta}
+            {roadCopy.altiCta}
             <span aria-hidden className="transition-transform group-hover:translate-x-0.5">→</span>
           </span>
         </Link>

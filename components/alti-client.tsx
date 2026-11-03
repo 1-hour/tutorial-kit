@@ -2,11 +2,11 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
-import type { Locale, MDTIData, MDTIResult } from '@/lib/types';
+import type { Locale, ALTIData, ALTIResult } from '@/lib/types';
 
 type Props = {
   locale: Locale;
-  data: MDTIData;
+  data: ALTIData;
   /** roadmap layer id → { icon, color, name, firstTutorial } */
   layerIndex: Record<
     string,
@@ -49,12 +49,12 @@ const COLOR_RING: Record<string, string> = {
 };
 
 /**
- * 根据回答计算 MDTI type，并匹配 results map。
+ * 根据回答计算 ALTI type，并匹配 results map。
  * 匹配策略：优先精确四字母匹配，fallback 到按 layer 偏好的 key。
  */
 function computeType(
   answers: Record<number, number>,
-  questions: MDTIData['questions'],
+  questions: ALTIData['questions'],
 ): string {
   const scores: Record<'EI' | 'SN' | 'TF' | 'JP', number> = {
     EI: 0,
@@ -76,8 +76,8 @@ function computeType(
 
 function matchResult(
   type: string,
-  results: MDTIData['results'],
-): { key: string; result: MDTIResult } | null {
+  results: ALTIData['results'],
+): { key: string; result: ALTIResult } | null {
   // 精确匹配
   if (results[type]) return { key: type, result: results[type] };
   // 近似匹配：找共同前缀最长的 key
@@ -92,7 +92,7 @@ function matchResult(
   return best ? { key: best.key, result: results[best.key] } : null;
 }
 
-export function MDTIClient({ locale, data, layerIndex, copy }: Props) {
+export function ALTIClient({ locale, data, layerIndex, copy }: Props) {
   const questions = data.questions;
   const [idx, setIdx] = useState(0);
   const [answers, setAnswers] = useState<Record<number, number>>({});

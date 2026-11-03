@@ -265,13 +265,13 @@ export function countUpcomingByCategories(categories: string[]): number {
 }
 
 /**
- * Load MDTI test data (cached per process)
+ * Load ALTI test data (cached per process)
  */
-let mdtiCache: import('./types').MDTIData | null = null;
-export function getMDTI(): import('./types').MDTIData {
-  if (mdtiCache) return mdtiCache;
-  const filePath = path.join(getContentDir(), 'mdti.yaml');
+let altiCache: import('./types').ALTIData | null = null;
+export function getALTI(): import('./types').ALTIData {
+  if (altiCache) return altiCache;
+  const filePath = path.join(getContentDir(), 'alti.yaml');
   const raw = fs.readFileSync(filePath, 'utf-8');
-  mdtiCache = yaml.load(raw) as import('./types').MDTIData;
-  return mdtiCache;
+  altiCache = yaml.load(raw) as import('./types').ALTIData;
+  return altiCache;
 }

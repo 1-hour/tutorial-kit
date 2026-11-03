@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { MDTIEntry } from '@/components/mdti-entry';
+import { ALTIEntry } from '@/components/alti-entry';
 import {
-  getMDTI,
+  getALTI,
   getRoadmap,
   getAllTutorials,
   isValidLocale,
@@ -24,7 +24,7 @@ export async function generateMetadata({
   if (!isValidLocale(locale)) return {};
   const loc = locale as Locale;
   const title =
-    loc === 'zh' ? 'AI 学习人格测试 — MDTI' : 'AI Learning Personality — MDTI';
+    loc === 'zh' ? 'AI 学习人格测试 — ALTI' : 'AI Learning Personality — ALTI';
   const description =
     loc === 'zh'
       ? '4 维 20 题，1 分钟测出你最适合的 AI 学习起点。'
@@ -32,12 +32,12 @@ export async function generateMetadata({
   return {
     title,
     description,
-    alternates: buildAlternates('mdti', loc),
+    alternates: buildAlternates('alti', loc),
     openGraph: { title, description, type: 'website' },
   };
 }
 
-export default async function MDTIPage({
+export default async function ALTIPage({
   params,
 }: {
   params: Promise<{ locale: string }>;
@@ -46,7 +46,7 @@ export default async function MDTIPage({
   if (!isValidLocale(locale)) notFound();
   const loc = locale as Locale;
 
-  const data = getMDTI();
+  const data = getALTI();
   const roadmap = getRoadmap();
   const tutorials = getAllTutorials(loc);
   const bySlug = new Map(tutorials.map((t) => [t.slug, t]));
@@ -107,7 +107,7 @@ export default async function MDTIPage({
         };
 
   return (
-    <MDTIEntry
+    <ALTIEntry
       locale={loc}
       data={data}
       layerIndex={layerIndex}

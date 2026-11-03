@@ -1,14 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { MDTIClient } from '@/components/mdti-client';
-import type { Locale, MDTIData } from '@/lib/types';
+import { ALTIClient } from '@/components/alti-client';
+import type { Locale, ALTIData } from '@/lib/types';
 
 type Props = {
   locale: Locale;
-  data: MDTIData;
-  layerIndex: Parameters<typeof MDTIClient>[0]['layerIndex'];
-  copy: Parameters<typeof MDTIClient>[0]['copy'] & {
+  data: ALTIData;
+  layerIndex: Parameters<typeof ALTIClient>[0]['layerIndex'];
+  copy: Parameters<typeof ALTIClient>[0]['copy'] & {
     eyebrow: string;
     title: string;
     desc: string;
@@ -18,14 +18,14 @@ type Props = {
 
 /**
  * Thin wrapper: shows an intro screen until the user clicks "start".
- * Then mounts <MDTIClient> which runs the actual test flow.
+ * Then mounts <ALTIClient> which runs the actual test flow.
  */
-export function MDTIEntry({ locale, data, layerIndex, copy }: Props) {
+export function ALTIEntry({ locale, data, layerIndex, copy }: Props) {
   const [started, setStarted] = useState(false);
 
   if (started) {
     return (
-      <MDTIClient
+      <ALTIClient
         locale={locale}
         data={data}
         layerIndex={layerIndex}

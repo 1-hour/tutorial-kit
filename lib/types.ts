@@ -123,7 +123,7 @@ export interface UIStrings {
     tutorials: string;
     categories: string;
     roadmap: string;
-    mdti: string;
+    alti: string;
     about: string;
   };
   home: {
@@ -197,13 +197,13 @@ export interface Roadmap {
 }
 
 /**
- * MDTI (AI Learning Personality Test)
+ * ALTI (AI Learning Personality Test)
  */
-export type MDTIDim = 'EI' | 'SN' | 'TF' | 'JP';
+export type ALTIDim = 'EI' | 'SN' | 'TF' | 'JP';
 
-export interface MDTIQuestion {
+export interface ALTIQuestion {
   id: number;
-  dim: MDTIDim;
+  dim: ALTIDim;
   text: Record<Locale, string>;
   options: Array<{
     weight: number; // +1 偏左字母 (E/S/T/J), -1 偏右 (I/N/F/P)
@@ -211,13 +211,13 @@ export interface MDTIQuestion {
   }>;
 }
 
-export interface MDTIResult {
+export interface ALTIResult {
   layer: string; // 对应 roadmap layer id
   title: Record<Locale, string>;
   desc: Record<Locale, string>;
 }
 
-export interface MDTIData {
-  questions: MDTIQuestion[];
-  results: Record<string, MDTIResult>;
+export interface ALTIData {
+  questions: ALTIQuestion[];
+  results: Record<string, ALTIResult>;
 }
