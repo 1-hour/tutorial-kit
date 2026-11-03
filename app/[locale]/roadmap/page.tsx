@@ -5,6 +5,7 @@ import {
   getRoadmap,
   getUIStrings,
   getAllTutorials,
+  countUpcomingByCategories,
   isValidLocale,
   getLocales,
 } from '@/lib/content';
@@ -103,15 +104,17 @@ export default async function RoadmapPage({
   const allTutorials = getAllTutorials(loc);
   const bySlug = new Map(allTutorials.map((t) => [t.slug, t]));
 
-  // Resolve each layer's tutorial slugs to actual tutorial summaries
+  // Resolve each layer's tutorial slugs to actual tutorial summaries + upcoming count
   const layers = roadmap.layers.map((layer: RoadmapLayer) => ({
     ...layer,
     items: layer.tutorials
       .map((slug) => bySlug.get(slug))
       .filter((t): t is NonNullable<typeof t> => Boolean(t)),
+    upcoming: countUpcomingByCategories(layer.categories || []),
   }));
 
   const totalTutorials = layers.reduce((n, l) => n + l.items.length, 0);
+  const totalUpcoming = layers.reduce((n, l) => n + l.upcoming, 0);
 
   const copy =
     loc === 'zh'
@@ -121,11 +124,13 @@ export default async function RoadmapPage({
           desc:
             '从大脑、工具、创作、构建、增长到变现，6 层能力地图。公开查看完整路线，选好方向后再决定从哪篇开始。',
           statLayers: '层能力',
-          statTutorials: '篇教程',
+          statTutorials: '篇已发布',
+          statUpcoming: '篇筹备中',
           statFree: '完全免费',
           start: '从第一层开始',
           browse: '浏览全部教程',
           layerTutorials: '篇教程',
+          layerUpcoming: '即将上线',
           startHere: '从这里开始',
           empty: '该层暂无已发布教程',
           howtoTitle: '怎么用这张图？',
@@ -141,11 +146,13 @@ export default async function RoadmapPage({
           desc:
             'Six capability layers: foundation, tools, creation, building, growth, and monetization. Browse the full map, pick a direction, then choose your first tutorial.',
           statLayers: 'layers',
-          statTutorials: 'tutorials',
+          statTutorials: 'published',
+          statUpcoming: 'coming soon',
           statFree: 'free',
           start: 'Start from layer one',
           browse: 'Browse all tutorials',
           layerTutorials: 'tutorials',
+          layerUpcoming: 'coming soon',
           startHere: 'Start here',
           empty: 'No published tutorials in this layer yet',
           howtoTitle: 'How to use this map',
@@ -175,6 +182,9 @@ export default async function RoadmapPage({
       <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-3">
         <Stat value={layers.length} label={copy.statLayers} />
         <Stat value={totalTutorials} label={copy.statTutorials} />
+        {totalUpcoming > 0 && (
+          <Stat value={totalUpcoming} label={copy.statUpcoming} muted />
+        )}
         <div className="text-sm font-medium text-green-600 dark:text-green-400">
           {copy.statFree}
         </div>
@@ -229,6 +239,11 @@ export default async function RoadmapPage({
                       <span className={`text-xs font-medium ${c.text}`}>
                         {layer.items.length} {copy.layerTutorials}
                       </span>
+                      {layer.upcoming > 0 && (
+                        <span className="text-xs text-muted-foreground">
+                          +{layer.upcoming} {copy.layerUpcoming}
+                        </span>
+                      )}
                     </div>
                     <p className="mt-0.5 text-sm text-muted-foreground">
                       {layer.subtitle[loc]}
@@ -292,10 +307,16 @@ export default async function RoadmapPage({
   );
 }
 
-function Stat({ value, label }: { value: number; label: string }) {
+function Stat({ value, label, muted }: { value: number; label: string; muted?: boolean }) {
   return (
     <div className="flex items-baseline gap-1.5">
-      <span className="text-2xl font-bold tabular-nums">{value}</span>
+      <span
+        className={`text-2xl font-bold tabular-nums ${
+          muted ? 'text-muted-foreground' : ''
+        }`}
+      >
+        {value}
+      </span>
       <span className="text-sm text-muted-foreground">{label}</span>
     </div>
   );

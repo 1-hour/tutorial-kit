@@ -187,6 +187,7 @@ export interface RoadmapLayer {
   color: string;
   name: Record<Locale, string>;
   subtitle: Record<Locale, string>;
+  categories: string[];
   tutorials: string[];
 }
 

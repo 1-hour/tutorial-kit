@@ -230,3 +230,36 @@ export function getRoadmap(): Roadmap {
   roadmapCache = yaml.load(raw) as Roadmap;
   return roadmapCache;
 }
+
+/**
+ * Load topics.yaml (upcoming / pipeline). Returns null if file not present
+ * (e.g. in dev without topics synced).
+ */
+export interface TopicItem {
+  slug: string;
+  category: string;
+  status: 'pending' | 'published' | 'draft' | string;
+  priority?: string;
+  topic?: string;
+}
+let topicsCache: TopicItem[] | null | undefined;
+export function getTopics(): TopicItem[] | null {
+  if (topicsCache !== undefined) return topicsCache;
+  const filePath = path.join(getContentDir(), 'topics.yaml');
+  if (!fs.existsSync(filePath)) {
+    topicsCache = null;
+    return null;
+  }
+  const raw = fs.readFileSync(filePath, 'utf-8');
+  const data = yaml.load(raw) as { queue?: TopicItem[] };
+  topicsCache = data?.queue ?? [];
+  return topicsCache;
+}
+
+/** Count pending topics in given categories (for roadmap "upcoming" badge). */
+export function countUpcomingByCategories(categories: string[]): number {
+  const topics = getTopics();
+  if (!topics) return 0;
+  const set = new Set(categories);
+  return topics.filter((t) => t.status === 'pending' && set.has(t.category)).length;
+}
